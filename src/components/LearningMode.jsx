@@ -4,52 +4,52 @@ import { Chessboard } from 'react-chessboard'
 
 const pieces = [
   {
-    name: 'Pawn',
+    name: 'רגלי',
     emoji: '♟️',
     unicorn: '💜',
     fen: '8/8/8/8/3P4/8/8/8 w - - 0 1',
-    description: 'The little soldier! Pawns move forward one square, but capture diagonally. On their first move, they can jump two squares!',
-    tips: ['Pawns can only move forward, never backward', 'They capture diagonally', 'If a pawn reaches the other side, it becomes a Queen! 👑']
+    description: 'החייל הקטן! רגלים זזים קדימה משבצת אחת, אבל אוכלים באלכסון. במהלך הראשון שלהם, הם יכולים לקפוץ שני משבצות!',
+    tips: ['רגלים יכולים לזוז רק קדימה, אף פעם אחורה', 'הם אוכלים באלכסון', 'אם רגלי מגיע לצד השני, הוא הופך למלכה! 👑']
   },
   {
-    name: 'Knight',
+    name: 'פרש',
     emoji: '♞',
     unicorn: '🦄',
     fen: '8/8/8/8/3N4/8/8/8 w - - 0 1',
-    description: 'The magical jumper! Knights move in an L-shape: two squares in one direction and one square perpendicular. They can jump over other pieces!',
-    tips: ['Knights are the only pieces that can jump over others', 'They always land on a different color square', 'Great for surprise attacks!']
+    description: 'הקופץ הקסום! פרשים זזים בצורת L: שני משבצות בכיוון אחד ומשבצת אחת הצידה. הם יכולים לקפוץ מעל כלים אחרים!',
+    tips: ['פרשים הם הכלים היחידים שיכולים לקפוץ מעל אחרים', 'הם תמיד נוחתים על צבע שונה', 'מעולים להתקפות הפתעה!']
   },
   {
-    name: 'Bishop',
+    name: 'רץ',
     emoji: '♝',
     unicorn: '⭐',
     fen: '8/8/8/8/3B4/8/8/8 w - - 0 1',
-    description: 'The diagonal dancer! Bishops slide diagonally as many squares as they want. Each bishop stays on its starting color forever.',
-    tips: ['Bishops can only move diagonally', 'One bishop stays on light squares, one on dark', 'They\'re great for long-range attacks']
+    description: 'רקדן האלכסונים! רצים גולשים באלכסון כמה משבצות שרוצים. כל רץ נשאר על הצבע שלו לנצח.',
+    tips: ['רצים יכולים לזוז רק באלכסון', 'רץ אחד על משבצות בהירות, אחד על כהות', 'הם מעולים להתקפות מרחוק']
   },
   {
-    name: 'Rook',
+    name: 'צריח',
     emoji: '♜',
     unicorn: '🏰',
     fen: '8/8/8/8/3R4/8/8/8 w - - 0 1',
-    description: 'The tower of power! Rooks move in straight lines - up, down, left, or right - as many squares as they want.',
-    tips: ['Rooks are very powerful in open positions', 'They work great together (doubled rooks)', 'Important for a special move called "castling"']
+    description: 'מגדל הכוח! צריחים זזים בקווים ישרים - למעלה, למטה, שמאלה או ימינה - כמה משבצות שרוצים.',
+    tips: ['צריחים חזקים מאוד במצב פתוח', 'הם עובדים מעולה ביחד (צריחים כפולים)', 'חשובים למהלך מיוחד שנקרא "הצרחה"']
   },
   {
-    name: 'Queen',
+    name: 'מלכה',
     emoji: '♛',
     unicorn: '👑',
     fen: '8/8/8/8/3Q4/8/8/8 w - - 0 1',
-    description: 'The superstar! The Queen combines the powers of the Rook and Bishop. She can move in any direction - straight or diagonal!',
-    tips: ['The most powerful piece on the board', 'Can move like a Rook OR a Bishop', 'Protect your Queen - losing her is a big deal!']
+    description: 'הכוכבת! המלכה משלבת את הכוחות של הצריח והרץ. היא יכולה לזוז לכל כיוון - ישר או באלכסון!',
+    tips: ['הכלי החזק ביותר על הלוח', 'יכולה לזוז כמו צריח או כמו רץ', 'תגן על המלכה - לאבד אותה זה קשה!']
   },
   {
-    name: 'King',
+    name: 'מלך',
     emoji: '♚',
     unicorn: '🤴',
     fen: '8/8/8/8/3K4/8/8/8 w - - 0 1',
-    description: 'The most important piece! The King moves one square in any direction. If your King is trapped (checkmate), you lose!',
-    tips: ['Protect your King at all costs', 'The King can capture pieces too', 'When in danger, the King is "in check"']
+    description: 'הכלי הכי חשוב! המלך זז משבצת אחת לכל כיוון. אם המלך שלך לכוד (מט), הפסדת!',
+    tips: ['תגן על המלך בכל מחיר', 'המלך יכול גם לאכול כלים', 'כשהוא בסכנה, הוא "בשח"']
   }
 ]
 
@@ -77,10 +77,7 @@ export default function LearningMode({ onBack, useClassicPieces }) {
       }
     })
     
-    // Highlight the piece square
-    const pieceSquare = currentPiece.fen.includes('P') || currentPiece.fen.includes('N') || 
-                        currentPiece.fen.includes('B') || currentPiece.fen.includes('R') || 
-                        currentPiece.fen.includes('Q') || currentPiece.fen.includes('K') ? 'd4' : 'd4'
+    const pieceSquare = 'd4'
     styles[pieceSquare] = { backgroundColor: 'rgba(255, 215, 0, 0.6)' }
     
     return styles
@@ -111,10 +108,10 @@ export default function LearningMode({ onBack, useClassicPieces }) {
   }, [useClassicPieces])
 
   return (
-    <div className="learning-mode">
+    <div className="learning-mode" dir="rtl">
       <div className="learning-header">
-        <button className="back-btn" onClick={onBack}>← Menu</button>
-        <h2>📚 Learn Chess Pieces</h2>
+        <button className="back-btn" onClick={onBack}>→ תפריט</button>
+        <h2>📚 למד כלי שחמט</h2>
       </div>
 
       <div className="piece-selector">
@@ -153,20 +150,20 @@ export default function LearningMode({ onBack, useClassicPieces }) {
               onChange={(e) => setShowMoves(e.target.checked)}
             />
             <span className="toggle-slider"></span>
-            <span>Show valid moves</span>
+            <span>הצג מהלכים אפשריים</span>
           </label>
         </div>
 
         <div className="info-section">
           <div className="piece-title">
             <span className="big-emoji">{useClassicPieces ? currentPiece.emoji : currentPiece.unicorn}</span>
-            <h3>The {currentPiece.name}</h3>
+            <h3>ה{currentPiece.name}</h3>
           </div>
           
           <p className="piece-description">{currentPiece.description}</p>
           
           <div className="tips-box">
-            <h4>💡 Tips:</h4>
+            <h4>💡 טיפים:</h4>
             <ul>
               {currentPiece.tips.map((tip, i) => (
                 <li key={i}>{tip}</li>
@@ -179,18 +176,18 @@ export default function LearningMode({ onBack, useClassicPieces }) {
       <div className="nav-buttons">
         <button 
           className="nav-btn"
-          disabled={selectedPiece === 0}
-          onClick={() => setSelectedPiece(prev => prev - 1)}
+          disabled={selectedPiece === pieces.length - 1}
+          onClick={() => setSelectedPiece(prev => prev + 1)}
         >
-          ← Previous
+          הבא ←
         </button>
         <span className="piece-counter">{selectedPiece + 1} / {pieces.length}</span>
         <button 
           className="nav-btn"
-          disabled={selectedPiece === pieces.length - 1}
-          onClick={() => setSelectedPiece(prev => prev + 1)}
+          disabled={selectedPiece === 0}
+          onClick={() => setSelectedPiece(prev => prev - 1)}
         >
-          Next →
+          → הקודם
         </button>
       </div>
     </div>

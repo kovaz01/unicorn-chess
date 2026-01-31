@@ -5,16 +5,12 @@ import './App.css'
 
 function App() {
   const [mode, setMode] = useState(null)
-  const [difficulty, setDifficulty] = useState(1)
+  const [difficulty, setDifficulty] = useState(null)
   const [useClassicPieces, setUseClassicPieces] = useState(false)
 
   const playSound = (type) => {
-    const sounds = {
-      click: new Audio('data:audio/wav;base64,UklGRl9vT19teleHICAgICAg'),
-      start: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'
-    }
     try {
-      const audio = new Audio(sounds[type] || sounds.click)
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3')
       audio.volume = 0.3
       audio.play().catch(() => {})
     } catch (e) {}
@@ -22,7 +18,7 @@ function App() {
 
   if (!mode) {
     return (
-      <div className="menu-container">
+      <div className="menu-container" dir="rtl">
         <div className="floating-elements">
           {[...Array(20)].map((_, i) => (
             <div key={i} className={`floating-item item-${i % 5}`} style={{
@@ -37,9 +33,9 @@ function App() {
         
         <div className="menu-card">
           <h1 className="title">
-            <span className="rainbow-text">🦄 Unicorn Chess 🦄</span>
+            <span className="rainbow-text">🦄 שחמט קסום 🦄</span>
           </h1>
-          <p className="subtitle">Learn & Play Chess with Magic! ✨</p>
+          <p className="subtitle">למד ושחק שחמט עם קסם! ✨</p>
           
           <div className="menu-buttons">
             <button 
@@ -47,8 +43,8 @@ function App() {
               onClick={() => { playSound('start'); setMode('learn') }}
             >
               <span className="btn-icon">📚</span>
-              <span className="btn-text">Learn to Play</span>
-              <span className="btn-desc">Discover how pieces move!</span>
+              <span className="btn-text">למד לשחק</span>
+              <span className="btn-desc">גלה איך הכלים זזים!</span>
             </button>
             
             <button 
@@ -56,24 +52,22 @@ function App() {
               onClick={() => { playSound('start'); setMode('play') }}
             >
               <span className="btn-icon">🎮</span>
-              <span className="btn-text">Play Game</span>
-              <span className="btn-desc">Challenge the unicorn AI!</span>
+              <span className="btn-text">התחל משחק</span>
+              <span className="btn-desc">התמודד מול חד הקרן!</span>
             </button>
           </div>
 
-          {mode === null && (
-            <div className="settings-preview">
-              <label className="toggle-label">
-                <input 
-                  type="checkbox" 
-                  checked={useClassicPieces}
-                  onChange={(e) => setUseClassicPieces(e.target.checked)}
-                />
-                <span className="toggle-slider"></span>
-                <span>Use classic pieces</span>
-              </label>
-            </div>
-          )}
+          <div className="settings-preview">
+            <label className="toggle-label">
+              <input 
+                type="checkbox" 
+                checked={useClassicPieces}
+                onChange={(e) => setUseClassicPieces(e.target.checked)}
+              />
+              <span className="toggle-slider"></span>
+              <span>כלים קלאסיים</span>
+            </label>
+          </div>
         </div>
       </div>
     )
@@ -85,26 +79,26 @@ function App() {
 
   if (mode === 'play') {
     return (
-      <div className="game-container">
+      <div className="game-container" dir="rtl">
         {difficulty === null ? (
           <div className="difficulty-select">
-            <h2>🌟 Choose Your Challenge 🌟</h2>
+            <h2>🌟 בחר רמת קושי 🌟</h2>
             <div className="difficulty-buttons">
               <button onClick={() => setDifficulty(1)} className="diff-btn easy">
-                <span>🌸</span> Easy
-                <small>Perfect for beginners!</small>
+                <span>🌸</span> קל
+                <small>מושלם למתחילים!</small>
               </button>
               <button onClick={() => setDifficulty(2)} className="diff-btn medium">
-                <span>🌺</span> Medium
-                <small>A fun challenge!</small>
+                <span>🌺</span> בינוני
+                <small>אתגר כיפי!</small>
               </button>
               <button onClick={() => setDifficulty(3)} className="diff-btn hard">
-                <span>🌹</span> Hard
-                <small>For chess wizards!</small>
+                <span>🌹</span> קשה
+                <small>לאלופי השחמט!</small>
               </button>
             </div>
             <button className="back-btn" onClick={() => setMode(null)}>
-              ← Back to Menu
+              → חזרה לתפריט
             </button>
           </div>
         ) : (

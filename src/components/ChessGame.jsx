@@ -1,30 +1,28 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Chess } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 import confetti from 'canvas-confetti'
 import { playSound } from '../utils/sounds'
 import { getBestMove, getEncouragingMessage, getMoveHint } from '../utils/ai'
-import { unicornPieces, classicPieces } from '../utils/pieces'
+import { unicornPieces } from '../utils/pieces.jsx'
 
-function ChessGame({ difficulty, theme, onBack }) {
+function ChessGame({ difficulty, onBack, onChangeDifficulty, useClassicPieces }) {
   const [game, setGame] = useState(new Chess())
   const [moveHistory, setMoveHistory] = useState([])
   const [gameStatus, setGameStatus] = useState('playing')
-  const [message, setMessage] = useState("Your turn! Move a white piece! 🌟")
+  const [message, setMessage] = useState("תורך! הזז כלי לבן! 🌟")
   const [showHint, setShowHint] = useState(false)
   const [hintSquares, setHintSquares] = useState({})
   const [selectedSquare, setSelectedSquare] = useState(null)
   const [validMoves, setValidMoves] = useState({})
   const [isThinking, setIsThinking] = useState(false)
 
-  const pieces = theme === 'unicorn' ? unicornPieces : classicPieces
-
   const updateStatus = useCallback((currentGame) => {
     if (currentGame.isCheckmate()) {
-      const winner = currentGame.turn() === 'w' ? 'Computer' : 'You'
-      if (winner === 'You') {
+      const winner = currentGame.turn() === 'w' ? 'מחשב' : 'אתה'
+      if (winner === 'אתה') {
         setGameStatus('won')
-        setMessage("🎉 YOU WIN! Amazing job, chess champion! 🏆")
+        setMessage("🎉 ניצחת! כל הכבוד, אלוף השחמט! 🏆")
         playSound('win')
         confetti({
           particleCount: 200,
@@ -34,15 +32,15 @@ function ChessGame({ difficulty, theme, onBack }) {
         })
       } else {
         setGameStatus('lost')
-        setMessage("Oh no! But great try! Play again? 💪")
+        setMessage("אוי! אבל שיחקת יופי! נסה שוב? 💪")
         playSound('lose')
       }
     } else if (currentGame.isDraw()) {
       setGameStatus('draw')
-      setMessage("It's a draw! You played so well! 🤝")
+      setMessage("תיקו! שיחקת מעולה! 🤝")
       playSound('draw')
     } else if (currentGame.isCheck()) {
-      setMessage(currentGame.turn() === 'w' ? "⚠️ Check! Protect your King!" : "You put the computer in check! Nice! 👑")
+      setMessage(currentGame.turn() === 'w' ? "⚠️ שח! תגן על המלך!" : "שמת את המחשב בשח! יופי! 👑")
       playSound('check')
     }
   }, [])
@@ -51,7 +49,7 @@ function ChessGame({ difficulty, theme, onBack }) {
     if (currentGame.isGameOver()) return
 
     setIsThinking(true)
-    setMessage("🤔 Computer is thinking...")
+    setMessage("🤔 המחשב חושב...")
 
     setTimeout(() => {
       const move = getBestMove(currentGame, difficulty)
@@ -70,7 +68,7 @@ function ChessGame({ difficulty, theme, onBack }) {
         }
       }
       setIsThinking(false)
-    }, difficulty === 'easy' ? 500 : difficulty === 'medium' ? 1000 : 1500)
+    }, difficulty === 1 ? 500 : difficulty === 2 ? 1000 : 1500)
   }, [difficulty, updateStatus])
 
   const onDrop = useCallback((sourceSquare, targetSquare) => {
@@ -102,7 +100,7 @@ function ChessGame({ difficulty, theme, onBack }) {
       }
     } catch (e) {
       playSound('invalid')
-      setMessage("Oops! That move isn't allowed. Try again! 🤔")
+      setMessage("אופס! מהלך לא חוקי. נסה שוב! 🤔")
     }
     return false
   }, [game, gameStatus, isThinking, makeComputerMove, updateStatus])
@@ -113,10 +111,8 @@ function ChessGame({ difficulty, theme, onBack }) {
     const piece = game.get(square)
     
     if (selectedSquare) {
-      // Try to make a move
       const success = onDrop(selectedSquare, square)
       if (!success && piece && piece.color === 'w') {
-        // Clicked on another white piece, select it instead
         setSelectedSquare(square)
         const moves = game.moves({ square, verbose: true })
         const highlights = {}
@@ -132,7 +128,6 @@ function ChessGame({ difficulty, theme, onBack }) {
         setValidMoves({})
       }
     } else if (piece && piece.color === 'w') {
-      // Select a white piece
       setSelectedSquare(square)
       const moves = game.moves({ square, verbose: true })
       const highlights = {}
@@ -156,7 +151,7 @@ function ChessGame({ difficulty, theme, onBack }) {
         [hint.from]: { background: 'rgba(255, 215, 0, 0.6)' },
         [hint.to]: { background: 'rgba(255, 215, 0, 0.6)' }
       })
-      setMessage(`💡 Try moving from ${hint.from} to ${hint.to}!`)
+      setMessage(`💡 נסה להזיז מ-${hint.from} ל-${hint.to}!`)
     }
   }
 
@@ -165,7 +160,7 @@ function ChessGame({ difficulty, theme, onBack }) {
     setGame(new Chess())
     setMoveHistory([])
     setGameStatus('playing')
-    setMessage("Your turn! Move a white piece! 🌟")
+    setMessage("תורך! הזז כלי לבן! 🌟")
     setShowHint(false)
     setHintSquares({})
     setSelectedSquare(null)
@@ -178,17 +173,13 @@ function ChessGame({ difficulty, theme, onBack }) {
     ...(selectedSquare ? { [selectedSquare]: { background: 'rgba(255,107,157,0.4)' } } : {})
   }), [validMoves, hintSquares, selectedSquare])
 
-  const boardColors = theme === 'unicorn' 
-    ? { light: '#ffe4f3', dark: '#c9a0dc' }
-    : { light: '#f0d9b5', dark: '#b58863' }
+  const difficultyText = difficulty === 1 ? '🌱 קל' : difficulty === 2 ? '🌿 בינוני' : '🌳 קשה'
 
   return (
-    <div className="chess-game">
+    <div className="chess-game" dir="rtl">
       <div className="game-header">
-        <button className="back-btn" onClick={onBack}>← Menu</button>
-        <div className="difficulty-badge">
-          {difficulty === 'easy' ? '🌱 Easy' : difficulty === 'medium' ? '🌿 Medium' : '🌳 Hard'}
-        </div>
+        <button className="back-btn" onClick={onBack}>→ תפריט</button>
+        <div className="difficulty-badge">{difficultyText}</div>
       </div>
 
       <div className="message-box">
@@ -209,10 +200,10 @@ function ChessGame({ difficulty, theme, onBack }) {
             borderRadius: '12px',
             boxShadow: '0 8px 32px rgba(196, 76, 255, 0.3)'
           }}
-          customDarkSquareStyle={{ backgroundColor: boardColors.dark }}
-          customLightSquareStyle={{ backgroundColor: boardColors.light }}
+          customDarkSquareStyle={{ backgroundColor: '#c9a0dc' }}
+          customLightSquareStyle={{ backgroundColor: '#ffe4f3' }}
           customSquareStyles={customSquareStyles}
-          customPieces={pieces}
+          customPieces={useClassicPieces ? undefined : unicornPieces}
           boardWidth={Math.min(400, window.innerWidth - 40)}
           arePiecesDraggable={gameStatus === 'playing' && game.turn() === 'w' && !isThinking}
         />
@@ -221,19 +212,19 @@ function ChessGame({ difficulty, theme, onBack }) {
       <div className="game-controls">
         {gameStatus === 'playing' && (
           <button className="hint-btn" onClick={getHint} disabled={isThinking}>
-            💡 Hint
+            💡 רמז
           </button>
         )}
         <button className="reset-btn" onClick={resetGame}>
-          🔄 New Game
+          🔄 משחק חדש
         </button>
       </div>
 
       <div className="move-history">
-        <h3>📜 Moves</h3>
+        <h3>📜 מהלכים</h3>
         <div className="moves-list">
           {moveHistory.length === 0 ? (
-            <span className="no-moves">No moves yet!</span>
+            <span className="no-moves">עדיין אין מהלכים!</span>
           ) : (
             moveHistory.map((move, i) => (
               <span key={i} className={`move ${i % 2 === 0 ? 'white-move' : 'black-move'}`}>
@@ -247,14 +238,14 @@ function ChessGame({ difficulty, theme, onBack }) {
       {gameStatus !== 'playing' && (
         <div className="game-over-overlay">
           <div className="game-over-modal">
-            <h2>{gameStatus === 'won' ? '🎉 Victory! 🎉' : gameStatus === 'lost' ? '😢 Game Over' : '🤝 Draw!'}</h2>
+            <h2>{gameStatus === 'won' ? '🎉 ניצחון! 🎉' : gameStatus === 'lost' ? '😢 סוף המשחק' : '🤝 תיקו!'}</h2>
             <p>{message}</p>
             <div className="game-over-buttons">
               <button className="play-again-btn" onClick={resetGame}>
-                🎮 Play Again
+                🎮 שחק שוב
               </button>
               <button className="menu-btn-small" onClick={onBack}>
-                🏠 Menu
+                🏠 תפריט
               </button>
             </div>
           </div>
